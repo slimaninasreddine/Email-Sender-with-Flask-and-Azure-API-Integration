@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rich Text Editor</title>
+    <style>
+        /* Style for the editable div */
+        #editor {
+            border: 1px solid #ccc;
+            padding: 10px;
+            min-height: 300px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+
+        /* Toolbar styling */
+        .toolbar {
+            margin-bottom: 10px;
+        }
+
+        .toolbar button {
+            margin-right: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Basic Rich Text Editor</h1>
+
+    <!-- Toolbar for basic formatting -->
+    <div class="toolbar">
+        <button onclick="execCmd('bold')">Bold</button>
+        <button onclick="execCmd('italic')">Italic</button>
+        <button onclick="execCmd('underline')">Underline</button>
+        <button onclick="execCmd('insertOrderedList')">Ordered List</button>
+        <button onclick="execCmd('insertUnorderedList')">Unordered List</button>
+        <button onclick="execCmd('justifyLeft')">Align Left</button>
+        <button onclick="execCmd('justifyCenter')">Align Center</button>
+        <button onclick="execCmd('justifyRight')">Align Right</button>
+        <button onclick="execCmd('createLink')">Insert Link</button>
+        <button onclick="execCmd('unlink')">Remove Link</button>
+    </div>
+
+    <!-- Editable div for the rich text editor -->
+    <div id="editor" contenteditable="true">
+        <!-- Users can paste text and images here -->
+        Start writing or paste content here...
+    </div>
+
+    <!-- Hidden form to submit the HTML content -->
+    <form id="emailForm" action="/send_email" method="POST" enctype="multipart/form-data">
+        <textarea id="emailBody" name="body" style="display:none;"></textarea>
+        <br><br>
+        <label for="subject">Email Subject:</label>
+        <input type="text" name="subject" required><br><br>
+
+        <label for="csv_file">Upload CSV File:</label>
+        <input type="file" name="csv_file" required><br><br>
+
+        <label for="attachment">Attach Files:</label>
+        <input type="file" name="attachment" multiple><br><br>
+
+        <button type="submit" onclick="submitForm()">Send Email</button>
+    </form>
+
+    <!-- JavaScript -->
+    <script>
+        // Execute a formatting command on the selected text
+        function execCmd(command) {
+            if (command === 'createLink') {
+                const url = prompt("Enter the link URL:", "http://");
+                if (url) document.execCommand(command, false, url);
+            } else {
+                document.execCommand(command, false, null);
+            }
+        }
+
+        // Submit the form with the editor's HTML content
+        function submitForm() {
+            const editorContent = document.getElementById("editor").innerHTML; // Get HTML from editor
+            document.getElementById("emailBody").value = editorContent; // Set hidden textarea value
+            document.getElementById("emailForm").submit(); // Submit form
+        }
+    </script>
+</body>
+</html>
